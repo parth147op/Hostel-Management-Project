@@ -146,7 +146,7 @@ echo "<span style='padding-left:2%; color:red;'>(You booked hostel without food)
 <td><b>Gender :</b></td>
 <td><?php echo $row->gender;?></td>
 <td><b>Course :</b></td>
-<td><?php echo $row->course;?></td>
+<!-- <td><?php echo $row->course;?></td> -->
 </tr>
 
 

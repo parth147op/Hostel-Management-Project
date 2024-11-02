@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('includes/config.php');
+// Establish PDO Connection
 include('includes/checklogin.php');
 check_login();
 //code for registration
@@ -32,8 +33,8 @@ $paddress=$_POST['paddress'];
 $pcity=$_POST['pcity'];
 $pstate=$_POST['pstate'];
 $ppincode=$_POST['ppincode'];
-	$result ="SELECT count(*) FROM userRegistration WHERE email=? || regNo=?";
-		$stmt = $mysqli->prepare($result);
+$result ="SELECT count(*) FROM userRegistration WHERE email=? || regNo=?";
+	$stmt = $mysqli->prepare($result);
 		$stmt->bind_param('ss',$email,$regno);
 		$stmt->execute();
 $stmt->bind_result($count);
@@ -45,18 +46,65 @@ echo"<script>alert('Registration number or email id already registered.');</scri
 }else{
 
 
-$query="insert into  registration(roomno,seater,feespm,foodstatus,stayfrom,duration,course,regno,firstName,middleName,lastName,gender,contactno,emailid,egycontactno,guardianName,guardianRelation,guardianContactno,corresAddress,corresCIty,corresState,corresPincode,pmntAddress,pmntCity,pmnatetState,pmntPincode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-$stmt = $mysqli->prepare($query);
-$rc=$stmt->bind_param('iiiisisissssisississsisssi',$roomno,$seater,$feespm,$foodstatus,$stayfrom,$duration,$course,$regno,$fname,$mname,$lname,$gender,$contactno,$emailid,$emcntno,$gurname,$gurrelation,$gurcntno,$caddress,$ccity,$cstate,$cpincode,$paddress,$pcity,$pstate,$ppincode);
-$stmt->execute();
-$stmt->close();
+// $query="insert into registration(roomno,seater,feespm,foodstatus,stayfrom,duration,course,regno,firstName,middleName,lastName,gender,contactno,emailid,egycontactno,guardianName,guardianRelation,guardianContactno,corresAddress,corresCIty,corresState,corresPincode,pmntAddress,pmntCity,pmnatetState,pmntPincode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+// $stmt = $mysqli->prepare($query);
+// if (!$stmt) {
+//     die("Error preparing statement: " . $mysqli->error);
+// }
+
+// $rc = $stmt->bind_param(
+//     'iiiisiissssissssssssisssi',
+//     $roomno, $seater, $feespm, $foodstatus, $stayfrom, $duration, $course, $regno, 
+//     $fname, $mname, $lname, $gender, $contactno, $emailid, $emcntno, $gurname, 
+//     $gurrelation, $gurcntno, $caddress, $ccity, $cstate, $cpincode, 
+//     $paddress, $pcity, $pstate, $ppincode
+// );
+// if (!$rc) {
+//     die("Error binding parameters: " . $stmt->error);
+// }
+// if (!$stmt->execute()) {
+//     die("Error executing statement: " . $stmt->error);
+// }
 
 
-$query1="insert into  userregistration(regNo,firstName,middleName,lastName,gender,contactNo,email,password) values(?,?,?,?,?,?,?,?)";
-$stmt1= $mysqli->prepare($query1);
-$stmt1->bind_param('sssssiss',$regno,$fname,$mname,$lname,$gender,$contactno,$emailid,$contactno);
-$stmt1->execute();
-echo"<script>alert('Student Succssfully register');</script>";
+// $stmt->execute();
+// $stmt->close();
+
+
+// $query1="insert into  userregistration(regNo,firstName,middleName,lastName,gender,contactNo,email,password) values(?,?,?,?,?,?,?,?)";
+// $stmt1= $mysqli->prepare($query1);
+// $stmt1->bind_param('sssssiss',$regno,$fname,$mname,$lname,$gender,$contactno,$emailid,$contactno);
+// $stmt1->execute();
+//echo"<script>alert('Student Succssfully register');</script>";
+$query = "INSERT INTO registration (
+	roomno, seater, feespm, foodstatus, stayfrom, duration, course, regno,
+	firstName, middleName, lastName, gender, contactno, emailid, egycontactno,
+	guardianName, guardianRelation, guardianContactno, corresAddress, corresCIty,
+	corresState, corresPincode, pmntAddress, pmntCity, pmnatetState, pmntPincode
+) VALUES (
+	'$roomno', '$seater', '$feespm', '$foodstatus', '$stayfrom', '$duration', '$course', '$regno',
+	'$fname', '$mname', '$lname', '$gender', '$contactno', '$emailid', '$emcntno',
+	'$gurname', '$gurrelation', '$gurcntno', '$caddress', '$ccity',
+	'$cstate', '$cpincode', '$paddress', '$pcity', '$pstate', '$ppincode'
+)";
+
+if ($mysqli->query($query) === TRUE) {
+	// Insert data into the user registration table
+	$query1 = "INSERT INTO userregistration (
+		regNo, firstName, middleName, lastName, gender, contactNo, email, password
+	) VALUES (
+		'$regno', '$fname', '$mname', '$lname', '$gender', '$contactno', '$emailid', '$contactno'
+	)";
+
+	if ($mysqli->query($query1) === TRUE) {
+		echo "<script>alert('Student Successfully registered');</script>";
+	} else {
+		echo "Error: " . $query1 . "<br>" . $mysqli->error;
+	}
+} else {
+	echo "Error: " . $query . "<br>" . $mysqli->error;
+}
 }
 }
 ?>
@@ -83,6 +131,7 @@ echo"<script>alert('Student Succssfully register');</script>";
 <script type="text/javascript" src="js/validation.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 <script>
+
 function getSeater(val) {
 $.ajax({
 type: "POST",
@@ -94,7 +143,7 @@ $('#seater').val(data);
 }
 });
 
-$.ajax({
+$.ajax({	
 type: "POST",
 url: "get_seater.php",
 data:'rid='+val,

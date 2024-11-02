@@ -60,6 +60,7 @@ header("location:dashboard.php");
 <script type="text/javascript" src="js/validation.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 <script type="text/javascript">
+	
 function valid()
 {
 if(document.registration.password.value!= document.registration.cpassword.value)
